@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_cropper/image_cropper.dart';
@@ -9,9 +10,10 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:projects_app/models/post.dart';
 import 'package:projects_app/models/post_preview.dart';
 import 'package:projects_app/models/user.dart';
-import 'package:projects_app/utilities/constants.dart';
 import 'package:projects_app/utilities/secure_storage.dart';
 import 'package:projects_app/models/feed.dart';
+
+final host = dotenv.env['HOST'];
 
 final isConnectedProvider = StateProvider<bool>((ref) => false);
 
@@ -20,7 +22,7 @@ final registerUserProvider = StateProvider<User>((ref) {
 });
 
 final registerProvider = FutureProvider<String>((ref) async {
-  String uri = "$localhost/register";
+  String uri = "$host/register";
   final body = ref.watch(registerUserProvider);
   final res = await http.post(
     Uri.parse(uri),
@@ -40,7 +42,7 @@ final loginUserProvider = StateProvider<User>((ref) {
 });
 
 final loginProvider = FutureProvider<String>((ref) async {
-  String uri = '$localhost/login';
+  String uri = '$host/login';
   final body = ref.watch(loginUserProvider);
   final res = await http.post(
     Uri.parse(uri),
@@ -59,7 +61,7 @@ final loggedUserProvider = FutureProvider<User?>((ref) async {
   final token = await SecureStorage.readData();
   ref.read(tokenProvider.notifier).state = token!;
   final email = JwtDecoder.decode(token)['email'];
-  String uri = '$localhost/users/$email';
+  String uri = '$host/users/$email';
   final res = await http.get(
     Uri.parse(uri),
     headers: {'Content-Type': 'application/json'},
@@ -82,7 +84,7 @@ final verifyTokenProvider = FutureProvider((ref) async {
     return false;
   }
 
-  String uri = '$localhost/verifyjwt';
+  String uri = '$host/verifyjwt';
   final body = {'token': token};
   final res = await http.post(
     Uri.parse(uri),
@@ -98,7 +100,7 @@ final verifyTokenProvider = FutureProvider((ref) async {
 });
 
 final feedProvider = FutureProvider<List<Feed>?>((ref) async {
-  String uri = '$localhost/posts/more/feed';
+  String uri = '$host/posts/more/feed';
   final token = await SecureStorage.readData();
   final res = await http.get(
     Uri.parse(uri),
@@ -130,7 +132,7 @@ final selectedPostIdProvider = StateProvider<String>((ref) {
 final selectedPostProvider = FutureProvider<Post?>((ref) async {
   final postId = ref.watch(selectedPostIdProvider);
   final token = await SecureStorage.readData();
-  String uri = '$localhost/posts/$postId';
+  String uri = '$host/posts/$postId';
   final res = await http.get(
     Uri.parse(uri),
     headers: {
@@ -155,7 +157,7 @@ final selectedVideoProvider = StateProvider<String>((ref) {
 final likePostProvider = FutureProvider<bool>((ref) async {
   final postId = ref.watch(selectedPostIdProvider);
   final token = await SecureStorage.readData();
-  String uri = '$localhost/posts/more/like';
+  String uri = '$host/posts/more/like';
   final res = await http.patch(
     Uri.parse(uri),
     headers: {
@@ -179,7 +181,7 @@ final commentProvider = StateProvider<String>((ref) {
 });
 
 final addCommentProvider = FutureProvider<Map<String, dynamic>?>((ref) async {
-  String uri = '$localhost/posts/more/comment';
+  String uri = '$host/posts/more/comment';
   final token = await SecureStorage.readData();
   final comment = ref.watch(commentProvider);
   final postId = ref.watch(selectedPostIdProvider);
@@ -237,7 +239,7 @@ final createdPostProvider = StateProvider<Post?>((ref) {
 });
 
 final createPostProvider = FutureProvider<bool>((ref) async {
-  String uri = '$localhost/posts';
+  String uri = '$host/posts';
   final token = await SecureStorage.readData();
   final post = ref.watch(createdPostProvider);
   final res = await http.post(
@@ -264,7 +266,7 @@ final searchUserProvider = FutureProvider<List>((ref) async {
     return [];
   }
   final token = await SecureStorage.readData();
-  String uri = '$localhost/users/search/$searchString';
+  String uri = '$host/users/search/$searchString';
   final res = await http.get(
     Uri.parse(uri),
     headers: {
@@ -284,7 +286,7 @@ final selectedUserEmailProvider = StateProvider<String>((ref) => '');
 
 final getUserProvider = FutureProvider<User?>((ref) async {
   final email = ref.watch(selectedUserEmailProvider);
-  String uri = '$localhost/users/$email';
+  String uri = '$host/users/$email';
   final res = await http.get(
     Uri.parse(uri),
     headers: {'Content-Type': 'application/json'},
@@ -300,7 +302,7 @@ final getUserProvider = FutureProvider<User?>((ref) async {
 
 final getPostsProvider = FutureProvider<List<PostPreview>>((ref) async {
   final email = ref.watch(selectedUserEmailProvider);
-  String uri = '$localhost/posts?email=$email';
+  String uri = '$host/posts?email=$email';
   final res = await http.get(
     Uri.parse(uri),
     headers: {'Content-Type': 'application/json'},
@@ -319,7 +321,7 @@ final getPostsProvider = FutureProvider<List<PostPreview>>((ref) async {
 });
 
 final followUserProvider = FutureProvider<bool?>((ref) async {
-  String uri = '$localhost/users/follow';
+  String uri = '$host/users/follow';
   final token = await SecureStorage.readData();
   final selectedUserEmail = ref.watch(selectedUserEmailProvider);
   final body = {'email': selectedUserEmail};
@@ -344,7 +346,7 @@ final deletePostIdProvider = StateProvider((ref) => '');
 
 final deletePostProvider = FutureProvider<bool>((ref) async {
   final id = ref.watch(deletePostIdProvider);
-  String uri = '$localhost/posts/$id';
+  String uri = '$host/posts/$id';
   final token = await SecureStorage.readData();
   final res = await http.delete(
     Uri.parse(uri),
@@ -366,7 +368,7 @@ final newProfilePicUrlProvider = StateProvider<String>((ref) => '');
 final newNameProvider = StateProvider<String>((ref) => '');
 
 final updateUserProvider = FutureProvider<bool>((ref) async {
-  String uri = '$localhost/users/';
+  String uri = '$host/users/';
   final token = await SecureStorage.readData();
   final picturePath = ref.watch(newProfilePicUrlProvider);
   final name = ref.watch(newNameProvider);
