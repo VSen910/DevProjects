@@ -3,6 +3,15 @@
 
 DevProjects is a social platform for developers where they can share about their projects in a comprehensive manner. This way, they can gain recognition for their work also allowing other developers to find inspiration for their own project ideas.
 
+## Features
+
+- Create and delete posts with mandatory Github links
+- Upload relevant screenshots and recordings
+- Likes and comments on posts
+- Follow and unfollow users
+- Search for users
+- Feed with posts from followed users
+- Edit your profile
 
 ## Installation
 
@@ -37,16 +46,6 @@ Go back to server folder and start the server:
 npm start
 ```
 Finally run the flutter app.
-
-## Features
-
-- Create and delete posts with mandatory Github links
-- Upload relevant screenshots and recordings
-- Likes and comments on posts
-- Follow and unfollow users
-- Search for users
-- Feed with posts from followed users
-- Edit your profile
 
 ## Screenshots
 
