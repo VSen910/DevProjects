@@ -22,6 +22,7 @@ npm install
 ```
 Navigate back to the root folder, and create a `.env` file and place your Cloudinary cloud name and upload preset along with the host URL as follows:
 ```bash
+
 CLOUDINARY_CLOUD_NAME=***
 CLOUDINARY_UPLOAD_PRESET=***
 HOST=***
@@ -56,3 +57,4 @@ Finally run the flutter app.
 <img src=https://github.com/user-attachments/assets/fd964f48-afa6-4df4-ac1d-596d2c332d7c width=200px/>
 <img src=https://github.com/user-attachments/assets/c34decc7-54da-4a2a-be88-d6056e6e4d36 width=200px/>
 <img src=https://github.com/user-attachments/assets/472af951-4a77-4938-af53-7774a19ff259 width=200px/>
+<img src=https://github.com/user-attachments/assets/90c96c25-382b-484e-aa68-246784d84bb3 width=200px/>
